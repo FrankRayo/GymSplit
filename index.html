@@ -82,6 +82,8 @@
         background:var(--card2);border-radius:5px;font-size:14px;font-weight:500;max-width:100%}
   .pick b{color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:10px;
           letter-spacing:.1em;font-weight:600}
+  .scheme{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--accent);margin-top:4px;display:block}
+  .tip{font-size:13.5px;line-height:1.45;color:#C9D1D9;background:var(--card);border-left:2px solid var(--accent);padding:9px 11px;margin:0 0 12px}
   .prev{margin-top:8px;font-size:12.5px;color:var(--dim);font-family:'IBM Plex Mono',monospace;display:block}
   .tally{margin-top:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--bone);display:block}
   .right{display:flex;flex-direction:column;align-items:flex-end;gap:9px;padding-top:2px}
@@ -300,8 +302,10 @@
               background:var(--accent);opacity:.26;
               -webkit-mask:var(--art) right center/contain no-repeat;mask:var(--art) right center/contain no-repeat}
   .plate > :not(.art){position:relative}
-  .bar{border-radius:0;height:6px;background:repeating-linear-gradient(90deg,var(--card2) 0 10px,var(--ink) 10px 12px)}
-  .bar i{box-shadow:0 0 10px var(--accent)}
+  /* un segmento por ejercicio; se encienden a medida que marcas */
+  .bar{border-radius:0;height:6px;background:none;display:flex;gap:5px;overflow:visible}
+  .bar i{flex:1;width:auto;background:var(--card2);transition:background .2s,box-shadow .2s}
+  .bar i.on{background:var(--accent);box-shadow:0 0 8px var(--accent)}
   .banner{border-radius:0}
   .sets{border-radius:0;border:1px solid var(--line);background:transparent}
   .tick{border-radius:0;transform:rotate(45deg);width:26px;height:26px;margin:2px}
@@ -345,16 +349,24 @@ const ART = {
 
 const DAYS = {
   legs:{label:'Piernas',day:'Lunes',color:'var(--legs)',title:'PIERNAS',art:ART.legs,
-    sub:{h:'Tu rutina de piernas + abdomen',n:'Tu rutina de piernas + abdomen'},
-    note:{h:'Simplificado a lo que haces de verdad. El deadlift está dentro de la bisagra de cadera para las veces que lo metes.',
-          n:'Simplificado a lo que haces de verdad. El deadlift está dentro de la bisagra de cadera para las veces que lo metes.'},ex:[
-    {id:'l1',n:'Compuesto de cuádriceps',t:'Leg press o hack',s:3,sh:1,o:['Leg press pies bajos','Hack squat','Sentadilla libre','Pendulum squat','Sentadilla en Smith pies adelantados','Leg extension']},
-    {id:'l2',n:'Curl femoral',t:'Isquios por flexión de rodilla',s:3,sh:1,ss:2,o:['Curl femoral sentado','Curl femoral tumbado','Curl femoral unilateral de pie','Curl nórdico']},
-    {id:'l3',n:'Bisagra de cadera',t:'Hiperextensión, rumano o deadlift',s:2,sh:1,o:['Hiperextensión 45° con peso','Peso muerto convencional','Peso muerto rumano con barra','Peso muerto rumano con mancuernas','Peso muerto rumano unilateral','Good morning']},
-    {id:'l4',n:'Aductores',t:'Cara interna del muslo',s:2,sh:1,o:['Máquina de aductores','Leg press stance sumo','Copenhagen plank']},
-    {id:'l5',n:'Gemelos',t:'Alterna de pie y sentado',s:3,ss:2,o:['Elevación de gemelos de pie','Elevación de gemelos sentado','Gemelos en leg press','Gemelos en Smith']},
-    {id:'l6',n:'Abdomen · tronco',t:'Flexión de columna',s:2,sh:1,o:['Crunch en polea arrodillado','Crunch en máquina','Sit-up declinado con peso']},
-    {id:'l7',n:'Abdomen · pelvis',t:'Flexión inversa o anti-extensión',s:2,o:['Elevación de piernas colgado','Reverse crunch declinado','Elevación de rodillas en paralelas','Ab wheel']}]},
+    sub:'Isquios · Cuádriceps · Glúteo',
+    note:{A:'Rutina A. Pirámide en curl y extensiones: sube el peso y baja las reps en cada serie. Las búlgaras van lentas, 4 segundos de bajada.',
+          B:'Rutina B. La prensa carga el volumen de cuádriceps y las zancadas inversas meten glúteo. Misma pirámide en curl y extensiones.'},ex:[
+    {id:'la1',v:'A',n:'Seated Hamstring Curl',t:'Isquios · pirámide',s:4,sh:1,rp:['15-20','12-15','10-12','8-10'],x:'Pirámide: sube el peso en cada serie mientras bajan las repeticiones.',o:['Seated Leg Curl','Lying Leg Curl','Standing Single-Leg Curl']},
+    {id:'la2',v:'A',n:'Hack Squat',t:'Cuádriceps · compuesto',s:6,sh:1,rp:['10-12'],o:['Hack Squat','Pendulum Squat','Smith Squat (Feet Forward)','Leg Press (Low Feet)']},
+    {id:'la3',v:'A',n:'Bulgarian Split Squat',t:'Enfocada en cuádriceps · reps por pierna',s:3,sh:1,rp:['10'],x:'4 segundos de bajada, 1 de subida. Recorrido profundo y torso más vertical para cargar el cuádriceps.',o:['Bulgarian Split Squat','Smith Bulgarian Split Squat']},
+    {id:'la4',v:'A',n:'Leg Extension',t:'Cuádriceps · pirámide + post-fallo',s:3,sh:1,rp:['15-20','12-15','10-12'],x:'Post-fallo en la última serie: al llegar al fallo levántate, sacude las piernas y saca 3 a 4 repeticiones más. Repite hasta sumar 25.',o:['Leg Extension','Single-Leg Extension']},
+    {id:'la5',v:'A',n:'Calf Raise',t:'Alterna de pie y sentado',s:3,o:['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise','Smith Calf Raise']},
+    {id:'la6',v:'A',n:'Hip Adduction',t:'Cara interna del muslo',s:2,o:['Hip Adduction Machine','Cable Hip Adduction','Copenhagen Plank']},
+    {id:'la7',v:'A',n:'Hip Abduction',t:'Glúteo medio · cara externa',s:2,o:['Hip Abduction Machine','Cable Hip Abduction','Banded Lateral Walk']},
+
+    {id:'lb1',v:'B',n:'Lying Leg Curl',t:'Isquios · pirámide',s:3,sh:1,rp:['12-15','10-12','8-10'],x:'Pirámide: sube el peso en cada serie mientras bajan las repeticiones.',o:['Lying Leg Curl','Seated Leg Curl','Nordic Curl']},
+    {id:'lb2',v:'B',n:'Leg Press',t:'Cuádriceps · compuesto',s:6,sh:1,rp:['10-12'],o:['Leg Press (Low Feet)','Leg Press (High & Wide Feet)','Hack Squat','Pendulum Squat']},
+    {id:'lb3',v:'B',n:'Reverse Dumbbell Lunge',t:'Con mancuernas · reps por pierna',s:2,sh:1,rp:['10-12'],x:'Paso atrás y rodilla de atrás casi al suelo. Termina todas las reps de una pierna antes de cambiar.',o:['Reverse Dumbbell Lunge','Smith Reverse Lunge','Walking Lunges']},
+    {id:'lb4',v:'B',n:'Leg Extension',t:'Cuádriceps · dos rangos',s:4,sh:1,rp:['12-15','12-15','8-10','8-10'],x:'Dos series livianas de 12 a 15 y dos pesadas de 8 a 10.',o:['Leg Extension','Single-Leg Extension']},
+    {id:'lb5',v:'B',n:'Calf Raise',t:'Alterna de pie y sentado',s:3,o:['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise','Smith Calf Raise']},
+    {id:'lb6',v:'B',n:'Hip Adduction',t:'Cara interna del muslo',s:2,o:['Hip Adduction Machine','Cable Hip Adduction','Copenhagen Plank']},
+    {id:'lb7',v:'B',n:'Hip Abduction',t:'Glúteo medio · cara externa',s:2,o:['Hip Abduction Machine','Cable Hip Abduction','Banded Lateral Walk']}]},
 
   push:{label:'Push',day:'Martes',color:'var(--push)',title:'PUSH',art:ART.push,
     sub:{h:'Pecho · Hombro · Bíceps',n:'Pecho · Hombro · Tríceps'},
@@ -401,6 +413,12 @@ const DAYS = {
 };
 
 const INFO={
+ 'Hip Abduction Machine':{d:'Sentado en la máquina, abres las piernas contra las almohadillas. Trabaja el glúteo medio, que estabiliza la cadera. Inclinarte un poco adelante carga más el glúteo.'},
+ 'Cable Hip Adduction':{d:'De pie de lado a la polea baja con el tobillo enganchado, llevas la pierna hacia la línea media cruzando por delante de la otra.'},
+ 'Cable Hip Abduction':{d:'De pie de lado a la polea baja con el tobillo enganchado, alejas la pierna del cuerpo hacia afuera sin inclinar el torso.'},
+ 'Banded Lateral Walk':{d:'Banda elástica sobre las rodillas o los tobillos, semiflexionado, das pasos laterales sin juntar los pies. Quema el glúteo medio.'},
+ 'Reverse Dumbbell Lunge':{d:'Das un paso largo hacia atrás y bajas hasta que la rodilla de atrás casi toca el suelo. Empuja con el talón de la pierna de adelante para volver. Hacia atrás la rodilla sufre menos que en la zancada hacia adelante y el glúteo trabaja más.'},
+ 'Single-Leg Extension':{d:'Igual que la leg extension normal pero con una pierna a la vez. Sirve para corregir diferencias de fuerza entre piernas.'},
  'Press inclinado con mancuernas':{i:'https://wger.de/media/exercise-images/41/Incline-bench-press-1.png',d:'Banco a 30–45°. Bajas las mancuernas a los lados del pecho alto y empujas arriba y ligeramente adentro. El ángulo carga la parte clavicular del pectoral.'},
  'Press inclinado en Hammer':{i:'https://wger.de/media/exercise-images/41/Incline-bench-press-1.png',d:'La máquina de discos con agarres independientes. Mismo ángulo que el banco inclinado, pero guiado: puedes ir más al fallo sin spotter.'},
  'Press inclinado en Smith':{i:'https://wger.de/media/exercise-images/41/Incline-bench-press-1.png',d:'Barra guiada en rieles, banco inclinado debajo. Al ser fija, te deja concentrarte en el pecho sin estabilizar.'},
@@ -481,16 +499,16 @@ const INFO={
  'Fondos en máquina':{i:'',d:'Máquina sentado que replica el fondo. Empujas hacia abajo con el torso vertical, así que carga tríceps más que pecho.'},
  'Press cerrado en Smith':{i:'https://wger.de/media/exercise-images/192/Bench-press-1.png',d:'Press de banca con las manos a la anchura de los hombros en la barra guiada. Compuesto de tríceps con bastante carga.'},
 
- 'Hack squat':{i:'https://wger.de/media/exercise-images/130/Narrow-stance-hack-squats-1-1024x721.png',d:'Máquina con la espalda apoyada en un respaldo inclinado. Carga el cuádriceps a fondo con la espalda baja protegida.'},
+ 'Hack Squat':{i:'https://wger.de/media/exercise-images/130/Narrow-stance-hack-squats-1-1024x721.png',d:'Máquina con la espalda apoyada en un respaldo inclinado. Carga el cuádriceps a fondo con la espalda baja protegida.'},
  'Sentadilla libre':{i:'https://wger.de/media/exercise-images/191/Front-squat-1-857x1024.png',d:'Barra sobre los trapecios, bajas hasta romper la paralela. La más exigente del día: quédate en RIR 0 a 1 con técnica intacta, sin buscar el fallo real.'},
- 'Leg press pies bajos':{i:'',d:'Pies bajos en la plataforma y juntos. Esa posición aumenta el recorrido de la rodilla y carga cuádriceps por sobre glúteo.'},
- 'Pendulum squat':{i:'',d:'Máquina donde el recorrido describe un arco en vez de una línea recta. Muy cómoda para la rodilla y brutal para el cuádriceps.'},
- 'Sentadilla en Smith pies adelantados':{i:'https://wger.de/media/exercise-images/191/Front-squat-1-857x1024.png',d:'Barra guiada con los pies por delante del cuerpo. Al ser fija la trayectoria, puedes adelantar los pies sin perder el equilibrio.'},
+ 'Leg Press (Low Feet)':{i:'',d:'Pies bajos en la plataforma y juntos. Esa posición aumenta el recorrido de la rodilla y carga cuádriceps por sobre glúteo.'},
+ 'Pendulum Squat':{i:'',d:'Máquina donde el recorrido describe un arco en vez de una línea recta. Muy cómoda para la rodilla y brutal para el cuádriceps.'},
+ 'Smith Squat (Feet Forward)':{i:'https://wger.de/media/exercise-images/191/Front-squat-1-857x1024.png',d:'Barra guiada con los pies por delante del cuerpo. Al ser fija la trayectoria, puedes adelantar los pies sin perder el equilibrio.'},
 
- 'Leg extension':{i:'',d:'Sentado, extiendes las rodillas contra el rodillo. Aislamiento puro de cuádriceps y la forma más segura de llegar al fallo.'},
- 'Sentadilla búlgara':{i:'',d:'Pie trasero apoyado en un banco, bajas con la pierna delantera. Exige equilibrio pero da un estiramiento enorme de glúteo y cuádriceps.'},
+ 'Leg Extension':{i:'',d:'Sentado, extiendes las rodillas contra el rodillo. Aislamiento puro de cuádriceps y la forma más segura de llegar al fallo.'},
+ 'Bulgarian Split Squat':{i:'',d:'Pie trasero apoyado en un banco, bajas con la pierna delantera. Exige equilibrio pero da un estiramiento enorme de glúteo y cuádriceps.'},
  'Leg press unilateral':{i:'',d:'Una pierna a la vez en la prensa. Corrige diferencias entre lados y te deja cargar fuerte sin comprometer la espalda.'},
- 'Zancadas caminando':{i:'https://wger.de/media/exercise-images/113/Walking-lunges-1.png',d:'Avanzas alternando piernas con mancuernas en las manos. Trabajo unilateral con un componente de estabilidad importante.'},
+ 'Walking Lunges':{i:'https://wger.de/media/exercise-images/113/Walking-lunges-1.png',d:'Avanzas alternando piernas con mancuernas en las manos. Trabajo unilateral con un componente de estabilidad importante.'},
  'Sissy squat':{i:'',d:'Te inclinas hacia atrás dejando que las rodillas avancen, con los talones levantados. Estira el cuádriceps como ningún otro, pero cuida la rodilla.'},
 
  'Peso muerto rumano con barra':{i:'https://wger.de/media/exercise-images/161/Dead-lifts-2.png',d:'Bisagra de cadera con las piernas casi rectas: llevas la cadera atrás y la barra baja pegada al muslo. Para cuando sientas el estiramiento del isquio, no cuando toque el suelo.'},
@@ -499,25 +517,25 @@ const INFO={
  'Good morning':{i:'',d:'Barra sobre los trapecios y bisagra de cadera hacia adelante. Muy exigente para la espalda baja: usa poco peso y prioriza la técnica.'},
  'Hiperextensión 45° con peso':{i:'https://wger.de/media/exercise-images/128/Hyperextensions-1.png',d:'En el banco inclinado de espalda baja, bajas y subes el torso abrazando un disco. Redondea isquios y glúteo sin cargar la columna.'},
 
- 'Curl femoral sentado':{i:'https://wger.de/media/exercise-images/117/seated-leg-curl-large-1.png',d:'Sentado con el rodillo sobre los tobillos. La cadera flexionada estira el isquio de entrada, así que rinde más que el tumbado.'},
- 'Curl femoral tumbado':{i:'https://wger.de/media/exercise-images/154/lying-leg-curl-machine-large-1.png',d:'Boca abajo, flexionas las rodillas contra el rodillo. No dejes que la cadera se levante del banco.'},
- 'Curl femoral unilateral de pie':{i:'https://wger.de/media/exercise-images/118/standing-leg-curls-large-1.png',d:'Una pierna a la vez, de pie en la máquina. Corrige asimetrías entre lados, que en isquios son frecuentes.'},
- 'Curl nórdico':{i:'',d:'De rodillas con los tobillos sujetos, bajas el cuerpo frenando con los isquios. Durísimo y excéntrico puro. Si no aguantas, ayúdate con las manos al llegar abajo.'},
+ 'Seated Leg Curl':{i:'https://wger.de/media/exercise-images/117/seated-leg-curl-large-1.png',d:'Sentado con el rodillo sobre los tobillos. La cadera flexionada estira el isquio de entrada, así que rinde más que el tumbado.'},
+ 'Lying Leg Curl':{i:'https://wger.de/media/exercise-images/154/lying-leg-curl-machine-large-1.png',d:'Boca abajo, flexionas las rodillas contra el rodillo. No dejes que la cadera se levante del banco.'},
+ 'Standing Single-Leg Curl':{i:'https://wger.de/media/exercise-images/118/standing-leg-curls-large-1.png',d:'Una pierna a la vez, de pie en la máquina. Corrige asimetrías entre lados, que en isquios son frecuentes.'},
+ 'Nordic Curl':{i:'',d:'De rodillas con los tobillos sujetos, bajas el cuerpo frenando con los isquios. Durísimo y excéntrico puro. Si no aguantas, ayúdate con las manos al llegar abajo.'},
 
  'Hip thrust':{i:'',d:'Espalda alta apoyada en un banco, barra sobre la cadera, empujas hasta alinear el torso. El mejor ejercicio de glúteo por carga directa.'},
  'Abducción en máquina':{i:'',d:'Sentado, abres las rodillas contra las almohadillas. Inclina el torso hacia adelante para cargar más el glúteo medio.'},
- 'Leg press pies altos y anchos':{i:'',d:'Pies arriba y separados en la plataforma. Esa posición reduce el recorrido de la rodilla y pasa el trabajo a glúteo e isquios.'},
+ 'Leg Press (High & Wide Feet)':{i:'',d:'Pies arriba y separados en la plataforma. Esa posición reduce el recorrido de la rodilla y pasa el trabajo a glúteo e isquios.'},
  'Patada de glúteo en polea':{i:'',d:'Polea baja en el tobillo, extiendes la cadera hacia atrás con la rodilla casi fija. Aislamiento de glúteo con tensión constante.'},
  'Step-up':{i:'',d:'Subes a un cajón con una pierna, sin impulsarte con la de atrás. Cuanto más alto el cajón, más glúteo y menos cuádriceps.'},
 
- 'Máquina de aductores':{i:'',d:'Sentado, cierras las rodillas contra las almohadillas. Aislamiento directo de la cara interna del muslo.'},
+ 'Hip Adduction Machine':{i:'',d:'Sentado, cierras las rodillas contra las almohadillas. Aislamiento directo de la cara interna del muslo.'},
  'Leg press stance sumo':{i:'',d:'En la prensa con los pies muy anchos y las puntas hacia afuera. El stance abierto mete bastante aductor además del cuádriceps.'},
- 'Copenhagen plank':{i:'',d:'Plancha lateral con la pierna de arriba apoyada en un banco, sosteniendo con el aductor. Es isométrico: anota segundos en vez de repeticiones.'},
+ 'Copenhagen Plank':{i:'',d:'Plancha lateral con la pierna de arriba apoyada en un banco, sosteniendo con el aductor. Es isométrico: anota segundos en vez de repeticiones.'},
 
- 'Elevación de gemelos de pie':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'De pie con la rodilla extendida, subes a punta de pie. La rodilla recta apunta al gastrocnemio, el gemelo visible.'},
- 'Elevación de gemelos sentado':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'Sentado con peso sobre las rodillas. La rodilla flexionada saca al gastrocnemio y deja trabajando al sóleo, debajo.'},
- 'Gemelos en leg press':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'En la prensa, con solo la punta del pie en la plataforma. Permite mucha carga y un estiramiento profundo abajo.'},
- 'Gemelos en Smith':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'Barra guiada sobre los hombros, de pie sobre un step. La guía te deja concentrarte en el rango completo.'},
+ 'Standing Calf Raise':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'De pie con la rodilla extendida, subes a punta de pie. La rodilla recta apunta al gastrocnemio, el gemelo visible.'},
+ 'Seated Calf Raise':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'Sentado con peso sobre las rodillas. La rodilla flexionada saca al gastrocnemio y deja trabajando al sóleo, debajo.'},
+ 'Leg Press Calf Raise':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'En la prensa, con solo la punta del pie en la plataforma. Permite mucha carga y un estiramiento profundo abajo.'},
+ 'Smith Calf Raise':{i:'https://wger.de/media/exercise-images/1243/53d4fabe-c994-4907-873f-8d82813a9832.png',d:'Barra guiada sobre los hombros, de pie sobre un step. La guía te deja concentrarte en el rango completo.'},
 
  'Crunch en polea arrodillado':{i:'https://wger.de/media/exercise-images/91/Crunches-1.png',d:'Arrodillado bajo la polea alta con la cuerda tras la nuca, flexionas la columna llevando los codos al suelo. Redondea la espalda a propósito: eso es el ejercicio.'},
  'Crunch en máquina':{i:'https://wger.de/media/exercise-images/91/Crunches-1.png',d:'Sentado en la máquina de abdomen. Resistencia pareja y fácil de progresar en peso, que en abdomen suele ser el problema.'},
@@ -534,13 +552,15 @@ const INFO={
 };
 
 const KEY='split4dias:v2', TOP=10, LB=2.20462;
-let S={sel:{},done:{},last:{},log:{},hist:{},mode:{},split:'h',unit:{}};
+let S={sel:{},done:{},last:{},log:{},hist:{},mode:{},split:'h',legv:'A',unit:{}};
 let day='legs', open=null, timer=null, guide=null;
 
 /* modo del día: 'largo' (todo) o 'corto' (solo lo marcado con sh) */
 const modeOf=k=>(S.mode&&S.mode[k])||'largo';
 /* reparto: 'h' híbrido (brazo cruzado) o 'n' normal (push=tríceps, pull=bíceps) */
 const splitOf=()=>S.split||'h';
+/* rutina de piernas: 'A' o 'B' */
+const legOf=()=>S.legv||'A';
 /* unidad de peso, guardada por variante porque el gym mezcla notaciones */
 const unitOf=v=>(S.unit&&S.unit[v])||'kg';
 
@@ -548,12 +568,17 @@ const unitOf=v=>(S.unit&&S.unit[v])||'kg';
 function exList(k){
   const sp=splitOf(), md=modeOf(k);
   /* co: solo aparece en corto (versiones fusionadas de dos secciones) */
-  return DAYS[k].ex.filter(e=>(!e.only||e.only===sp)&&(md==='largo'?!e.co:!!e.sh));
+  return DAYS[k].ex.filter(e=>(!e.only||e.only===sp)&&(!e.v||e.v===legOf())&&(md==='largo'?!e.co:!!e.sh));
 }
 /* series objetivo: en corto usa ss si el ejercicio lo define */
 const setsOf=(e,k)=>(modeOf(k)==='corto'&&e.ss)?e.ss:e.s;
 /* textos que cambian según el reparto */
-const txt=(v)=>(typeof v==='string')?v:(v[splitOf()]||v.h);
+const txt=(v)=>(typeof v==='string')?v:(v[splitOf()]||v[legOf()]||v.h);
+/* rango de reps de la serie k (si hay más series que rangos, repite el último) */
+const rpOf=(e,k)=>e&&e.rp?e.rp[Math.min(k,e.rp.length-1)]:null;
+const topOf=r=>{const m=String(r||'').split('-');return parseInt(m[m.length-1],10)||TOP;};
+/* resumen del esquema: '6 × 10-12 reps' o '15-20 · 12-15 · 10-12 reps' */
+const schemeOf=(e,n)=>{if(!e.rp)return '';const L=Array.from({length:n},(_,k)=>rpOf(e,k));return L.every(r=>r===L[0])?n+' × '+L[0]+' reps':L.join(' · ')+' reps';};
 
 /* Guarda donde se pueda: almacenamiento de Claude, si no el del navegador, si no en memoria. */
 const mem={};
@@ -574,10 +599,21 @@ async function load(){
   try{const v=await STORE.get(); if(v) S=Object.assign(S,JSON.parse(v));}catch(e){}
   ['sel','done','last','log','hist','mode','unit'].forEach(k=>{S[k]=S[k]||{}});
   if(S.split!=='h'&&S.split!=='n') S.split='h';
+  if(S.legv!=='A'&&S.legv!=='B') S.legv='A';
   migrateDrops();
+  migrateNames();
   render();
 }
 
+/* Las variantes de piernas pasaron a inglés: mueve historial, unidad y elecciones al nombre nuevo. */
+const RENAME={"Curl femoral sentado": "Seated Leg Curl", "Curl femoral tumbado": "Lying Leg Curl", "Curl femoral unilateral de pie": "Standing Single-Leg Curl", "Curl nórdico": "Nordic Curl", "Hack squat": "Hack Squat", "Pendulum squat": "Pendulum Squat", "Sentadilla en Smith pies adelantados": "Smith Squat (Feet Forward)", "Leg press pies bajos": "Leg Press (Low Feet)", "Leg press pies altos y anchos": "Leg Press (High & Wide Feet)", "Sentadilla búlgara": "Bulgarian Split Squat", "Sentadilla búlgara en Smith": "Smith Bulgarian Split Squat", "Leg extension": "Leg Extension", "Leg extension unilateral": "Single-Leg Extension", "Zancada inversa con mancuernas": "Reverse Dumbbell Lunge", "Zancada inversa en Smith": "Smith Reverse Lunge", "Zancadas caminando": "Walking Lunges", "Elevación de gemelos de pie": "Standing Calf Raise", "Elevación de gemelos sentado": "Seated Calf Raise", "Gemelos en leg press": "Leg Press Calf Raise", "Gemelos en Smith": "Smith Calf Raise", "Máquina de aductores": "Hip Adduction Machine", "Aducción en polea": "Cable Hip Adduction", "Copenhagen plank": "Copenhagen Plank", "Máquina de abductores": "Hip Abduction Machine", "Abducción en polea": "Cable Hip Abduction", "Caminata lateral con banda": "Banded Lateral Walk"};
+function migrateNames(){
+  Object.keys(RENAME).forEach(function(a){const b=RENAME[a];
+    if(S.hist[a]&&!S.hist[b]){S.hist[b]=S.hist[a];delete S.hist[a];}
+    if(S.unit[a]&&!S.unit[b]){S.unit[b]=S.unit[a];delete S.unit[a];}
+  });
+  ['sel','last'].forEach(o=>Object.values(S[o]||{}).forEach(d=>d&&Object.keys(d).forEach(k=>{if(RENAME[d[k]])d[k]=RENAME[d[k]];})));
+}
 /* El dropset era uno solo (ds/dw/dr). Ahora es una lista d:[{w,r},...].
    Convierte lo viejo para no perder nada de lo ya anotado. */
 function migrateDrops(){
@@ -613,7 +649,7 @@ const other=u=>u==='kg'?'lb':'kg';
 /* peso de un set expresado en la unidad U, venga de donde venga */
 const inU=(w,from,U)=>{const n=num(w);return n===null?null:r1(conv(n,from,U));};
 
-function goal(v){
+function goal(v,e){
   const h=S.hist[v], U=unitOf(v);
   if(!h||!h.length) return {c:'none',k:'Sin registro',v:'Primera vez con esta variante. Anota peso y repeticiones para tener contra qué progresar.'};
   const hu=h[0].u||'kg';
@@ -623,7 +659,10 @@ function goal(v){
   const cv=last.map(x=>({w:inU(x.w,hu,U),r:num(x.r)}));
   const nota=(hu!==U)?' <i>(convertido desde '+hu+')</i>':'';
   const w=Math.max.apply(null,cv.map(x=>x.w));
-  if(cv.every(x=>x.r>=TOP))
+  if(e&&e.rp){
+    if(cv.every((x,k)=>x.r>=topOf(rpOf(e,k))))
+      return {c:'rise',k:'Sube el peso',v:'Llegaste al <b>tope del rango en todas las series</b> ('+cv.map(x=>x.w+'×'+x.r).join('  ')+' '+U+')'+nota+'. Sube el peso y vuelve a la parte baja de cada rango.'};
+  } else if(cv.every(x=>x.r>=TOP))
     return {c:'rise',k:'Sube el peso',v:'Cerraste <b>'+TOP+' repeticiones en todas las series</b> con '+w+' '+U+nota+'. Sube al siguiente incremento y vuelve a 8.'};
   return {c:'hold',k:'Mismo peso',v:'Última vez: <b>'+cv.map(x=>x.w+'×'+x.r).join('  ')+' '+U+'</b>'+nota+'. Mantén el peso y busca una repetición más en cada serie.'};
 }
@@ -660,7 +699,7 @@ function renderDay(){
     const id=e.id, nS=setsOf(e,day);
     const sel=g('sel',day,id), prev=g('last',day,id), isDone=!!g('done',day,id), isOpen=open===id;
     const L=rows(day,id,nS), logged=fmt(L);
-    const h=sel?(S.hist[sel]||[]):[], G=sel?goal(sel):null, pset=h.length?h[0].s:null;
+    const h=sel?(S.hist[sel]||[]):[], G=sel?goal(sel,e):null, pset=h.length?h[0].s:null;
     const pu=h.length?(h[0].u||'kg'):'kg';
     const U=sel?unitOf(sel):'kg', UU=U.toUpperCase(), O=other(U);
     /* equivalencia de lo anotado hoy, en la otra unidad */
@@ -678,7 +717,7 @@ function renderDay(){
           '<span class="s">S'+(k+1)+'</span>'+
           '<label class="fld"><input type="text" inputmode="decimal" placeholder="peso" value="'+r.w+'" data-log="'+id+'" data-set="'+k+'" data-f="w" aria-label="Peso serie '+(k+1)+'"><u>'+UU+'</u></label>'+
           '<span class="x">×</span>'+
-          '<label class="fld"><input type="text" inputmode="numeric" placeholder="reps" value="'+r.r+'" data-log="'+id+'" data-set="'+k+'" data-f="r" aria-label="Repeticiones serie '+(k+1)+'"><u>REP</u></label>'+
+          '<label class="fld"><input type="text" inputmode="numeric" placeholder="'+(rpOf(e,k)||'reps')+'" value="'+r.r+'" data-log="'+id+'" data-set="'+k+'" data-f="r" aria-label="Repeticiones serie '+(k+1)+'"><u>REP</u></label>'+
           '<button class="dsb '+(D2.length?'on':'')+'" data-ds="'+id+'|'+k+'" aria-pressed="'+(D2.length>0)+'" aria-label="Marcar serie '+(k+1)+' como dropset">DS</button>'+
           '<span class="delta '+D.c+'" data-d="'+id+'-'+k+'">'+D.x+'</span></div>'+
           D2.map(function(dr,j){
@@ -708,6 +747,7 @@ function renderDay(){
         '<span class="body">'+
           '<span class="name">'+e.n+'</span>'+
           '<span class="target">'+e.t+'</span>'+
+          (e.rp?'<span class="scheme">'+schemeOf(e,nS)+'</span>':'')+
           (sel?'<span class="pick"><b>HOY</b>'+sel+'</span>':'')+
           (!sel&&prev?'<span class="prev">última vez · '+prev+'</span>':'')+
           (logged?'<span class="tally">'+logged+'</span>':'')+
@@ -717,7 +757,7 @@ function renderDay(){
           '<span class="tick" role="checkbox" aria-checked="'+isDone+'" aria-label="Marcar hecho" data-tick="'+id+'"><i>✓</i></span>'+
           '<span class="chev">▾</span>'+
         '</span></button>'+
-      '<div class="panel"><div class="opthead">Elige la que esté libre</div>'+
+      '<div class="panel">'+(e.x?'<div class="tip">'+e.x+'</div>':'')+'<div class="opthead">Elige la que esté libre</div>'+
         e.o.map(function(o){
           const key=id+'|'+o, inf=INFO[o], isG=guide===key;
           return '<div class="optrow">'+
@@ -743,6 +783,10 @@ function renderDay(){
       '<button class="'+(md==='largo'?'on':'')+'" data-md="largo">Largo</button>'+
       '<button class="'+(md==='corto'?'on':'')+'" data-md="corto">Corto</button>'+
     '</div></div>'+
+    (day==='legs'?'<div class="segwrap"><span class="seglab">Rutina</span><div class="seg">'+
+      '<button class="'+(legOf()==='A'?'on':'')+'" data-lv="A">Día A</button>'+
+      '<button class="'+(legOf()==='B'?'on':'')+'" data-lv="B">Día B</button>'+
+    '</div></div>':'')+
     ((day==='push'||day==='pull')?'<div class="segwrap"><span class="seglab">Reparto de brazo</span><div class="seg">'+
       '<button class="'+(sp==='h'?'on':'')+'" data-sp="h">Híbrido</button>'+
       '<button class="'+(sp==='n'?'on':'')+'" data-sp="n">Normal</button>'+
@@ -750,9 +794,9 @@ function renderDay(){
   '</div>';
 
   return '<div class="plate">'+(d.art?'<i class="art" style="--art:url('+d.art+')"></i>':'')+
-      '<div class="eyebrow">'+d.day+' · '+total+' ejercicios'+(md==='corto'?' · corto':'')+'</div>'+
+      '<div class="eyebrow">'+d.day+(day==='legs'?' · rutina '+legOf():'')+' · '+total+' ejercicios'+(md==='corto'?' · corto':'')+'</div>'+
       '<h1>'+d.title+'</h1><div class="aur" aria-hidden="true">'+d.title+' · '+d.day+'</div><p>'+txt(d.sub)+'</p>'+
-      '<div class="meter"><div class="bar"><i style="width:'+(total?(doneN/total*100).toFixed(0):0)+'%"></i></div><span>'+doneN+' / '+total+'</span></div>'+
+      '<div class="meter"><div class="bar">'+list.map((e,k)=>'<i class="'+(k<doneN?'on':'')+'"></i>').join('')+'</div><span>'+doneN+' / '+total+'</span></div>'+
     '</div>'+modeBar+'<div class="banner">'+txt(d.note)+'</div>'+cards+
     '<div class="finish"><button data-finish '+(doneN===0?'disabled':'')+'>Cerrar sesión de hoy</button>'+
     '<p>Guarda pesos, repeticiones y variantes en el historial. La próxima vez te muestra qué tienes que superar.</p></div>';
@@ -760,8 +804,8 @@ function renderDay(){
 
 function renderNotes(){
   const rws=[['Pecho','10','2×'],['Espalda','12','2×'],['Deltoide anterior','4','2×'],['Deltoide medio','6','2×'],
-    ['Deltoide posterior','6','2×'],['Bíceps','6','2×'],['Tríceps','6','2×'],['Cuádriceps','6','1×'],
-    ['Isquios','4','1×'],['Glúteo y aductores','4','1×'],['Gemelos','3','1×'],['Abdomen','4','1×']]
+    ['Deltoide posterior','6','2×'],['Bíceps','6','2×'],['Tríceps','6','2×'],['Cuádriceps','12','1×'],
+    ['Isquios','3–4','1×'],['Glúteo','2–3','1×'],['Gemelos','3','1×'],['Aductores','2','1×'],['Abductores','2','1×']]
     .map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('');
   const n=Object.keys(S.hist).length;
 
@@ -785,6 +829,11 @@ function renderNotes(){
     '<p>Cada día tiene dos versiones. <b>Largo</b> es el entrenamiento completo. <b>Corto</b> deja los compuestos con sus series intactas y recorta los aislamientos, apuntando a unos 40 minutos. La elección se guarda por día, así que puedes tener Push en corto y Piernas en largo al mismo tiempo.</p>'+
     '<p>Lo que se recorta en corto no es al azar: se van los segundos ángulos de un mismo músculo y baja una serie en los aislamientos que recuperan rápido. Los compuestos que quedan no pierden series, porque son los que sostienen la progresión.</p>'+
     '<p>En Push y Pull el corto prioriza el brazo. En Push sale el press vertical, porque el press inclinado y la apertura ya le dan estímulo al deltoide anterior, y entra un segundo ejercicio de brazo. En Pull sale el remo para dorsal, porque el remo de espalda alta, el jalón y el deltoide posterior ya cubren la espalda, y entra un segundo ejercicio de brazo. El brazo que entra es el que toca ese día según el reparto: en híbrido, bíceps en Push y tríceps en Pull; en normal, al revés.</p>'+
+
+    '<h2>Piernas A y B</h2>'+
+    '<p>Piernas tiene dos rutinas y eliges cuál toca con el selector <b>Día A / Día B</b>. La app recuerda la última que elegiste. Lo natural es alternarlas semana a semana.</p>'+
+    '<p><b>A:</b> Seated Hamstring Curl en pirámide, Hack Squat 6×10-12, Bulgarian Split Squat lenta y Leg Extension con post-fallo. <b>B:</b> Lying Leg Curl en pirámide, Leg Press 6×10-12, Reverse Dumbbell Lunge y Leg Extension en dos rangos. En largo se suman Calf Raise, Hip Adduction y Hip Abduction.</p>'+
+    '<p>En los ejercicios en <b>pirámide</b> subes el peso cada serie y bajas las repeticiones. La casilla de reps de cada serie te muestra su rango, y el ejercicio te pide subir de peso cuando llegas al <b>tope del rango en todas las series</b>. En corto, Piernas hace solo los 4 ejercicios principales de la rutina con todas sus series. En largo se suman gemelos, aductores y abductores.</p>'+
 
     '<h2>Híbrido y normal</h2>'+
     '<p>En <b>híbrido</b>, el bíceps va el martes con Push y el tríceps el miércoles con Pull. Así cada brazo entra fresco, sin arrastrar la fatiga de los press ni de los remos.</p>'+
@@ -878,6 +927,9 @@ document.addEventListener('click',function(e){
   const mdb=e.target.closest('[data-md]');
   if(mdb){S.mode[day]=mdb.dataset.md;open=null;guide=null;save();return render();}
 
+  const lvb=e.target.closest('[data-lv]');
+  if(lvb){S.legv=lvb.dataset.lv;open=null;guide=null;save();return render();}
+
   const spb=e.target.closest('[data-sp]');
   if(spb){S.split=spb.dataset.sp;open=null;guide=null;save();return render();}
 
@@ -958,7 +1010,7 @@ document.addEventListener('click',function(e){
   }
 
   if(e.target.closest('[data-reset]')){
-    S={sel:{},done:{},last:{},log:{},hist:{},mode:{},split:'h',unit:{}};save();return render();}
+    S={sel:{},done:{},last:{},log:{},hist:{},mode:{},split:'h',legv:'A',unit:{}};save();return render();}
 });
 
 load();
