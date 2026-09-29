@@ -352,8 +352,8 @@ const DAYS = {
     sub:'Isquios · Cuádriceps · Glúteo',
     note:{A:'Rutina A. Pirámide en curl y extensiones: sube el peso y baja las reps en cada serie. Las búlgaras van lentas, 4 segundos de bajada.',
           B:'Rutina B. La prensa carga el volumen de cuádriceps y las zancadas inversas meten glúteo. Misma pirámide en curl y extensiones.'},ex:[
-    {id:'la1',v:'A',n:'Seated Hamstring Curl',t:'Isquios · pirámide',s:4,sh:1,rp:['15-20','12-15','10-12','8-10'],x:'Pirámide: sube el peso en cada serie mientras bajan las repeticiones.',o:['Seated Leg Curl','Lying Leg Curl','Standing Single-Leg Curl']},
-    {id:'la2',v:'A',n:'Hack Squat',t:'Cuádriceps · compuesto',s:6,sh:1,rp:['10-12'],o:['Hack Squat','Pendulum Squat','Smith Squat (Feet Forward)','Leg Press (Low Feet)']},
+    {id:'la1',v:'A',n:'Seated Hamstring Curl',t:'Isquios · pirámide',s:3,sh:1,rp:['12-15','10-12','8-10'],x:'Pirámide: sube el peso en cada serie mientras bajan las repeticiones.',o:['Seated Leg Curl','Lying Leg Curl','Standing Single-Leg Curl']},
+    {id:'la2',v:'A',n:'Hack Squat',t:'Cuádriceps · compuesto',s:3,sh:1,ss:4,rp:['10-12'],o:['Hack Squat','Pendulum Squat','Smith Squat (Feet Forward)','Leg Press (Low Feet)']},
     {id:'la3',v:'A',n:'Bulgarian Split Squat',t:'Enfocada en cuádriceps · reps por pierna',s:3,sh:1,rp:['10'],x:'4 segundos de bajada, 1 de subida. Recorrido profundo y torso más vertical para cargar el cuádriceps.',o:['Bulgarian Split Squat','Smith Bulgarian Split Squat']},
     {id:'la4',v:'A',n:'Leg Extension',t:'Cuádriceps · pirámide + post-fallo',s:3,sh:1,rp:['15-20','12-15','10-12'],x:'Post-fallo en la última serie: al llegar al fallo levántate, sacude las piernas y saca 3 a 4 repeticiones más. Repite hasta sumar 25.',o:['Leg Extension','Single-Leg Extension']},
     {id:'la5',v:'A',n:'Calf Raise',t:'Alterna de pie y sentado',s:3,o:['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise','Smith Calf Raise']},
@@ -361,7 +361,7 @@ const DAYS = {
     {id:'la7',v:'A',n:'Hip Abduction',t:'Glúteo medio · cara externa',s:2,o:['Hip Abduction Machine','Cable Hip Abduction','Banded Lateral Walk']},
 
     {id:'lb1',v:'B',n:'Lying Leg Curl',t:'Isquios · pirámide',s:3,sh:1,rp:['12-15','10-12','8-10'],x:'Pirámide: sube el peso en cada serie mientras bajan las repeticiones.',o:['Lying Leg Curl','Seated Leg Curl','Nordic Curl']},
-    {id:'lb2',v:'B',n:'Leg Press',t:'Cuádriceps · compuesto',s:6,sh:1,rp:['10-12'],o:['Leg Press (Low Feet)','Leg Press (High & Wide Feet)','Hack Squat','Pendulum Squat']},
+    {id:'lb2',v:'B',n:'Leg Press',t:'Cuádriceps · compuesto',s:3,sh:1,ss:4,rp:['10-12'],o:['Leg Press (Low Feet)','Leg Press (High & Wide Feet)','Hack Squat','Pendulum Squat']},
     {id:'lb3',v:'B',n:'Reverse Dumbbell Lunge',t:'Con mancuernas · reps por pierna',s:2,sh:1,rp:['10-12'],x:'Paso atrás y rodilla de atrás casi al suelo. Termina todas las reps de una pierna antes de cambiar.',o:['Reverse Dumbbell Lunge','Smith Reverse Lunge','Walking Lunges']},
     {id:'lb4',v:'B',n:'Leg Extension',t:'Cuádriceps · dos rangos',s:4,sh:1,rp:['12-15','12-15','8-10','8-10'],x:'Dos series livianas de 12 a 15 y dos pesadas de 8 a 10.',o:['Leg Extension','Single-Leg Extension']},
     {id:'lb5',v:'B',n:'Calf Raise',t:'Alterna de pie y sentado',s:3,o:['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise','Smith Calf Raise']},
@@ -804,8 +804,8 @@ function renderDay(){
 
 function renderNotes(){
   const rws=[['Pecho','10','2×'],['Espalda','12','2×'],['Deltoide anterior','4','2×'],['Deltoide medio','6','2×'],
-    ['Deltoide posterior','6','2×'],['Bíceps','6','2×'],['Tríceps','6','2×'],['Cuádriceps','12','1×'],
-    ['Isquios','3–4','1×'],['Glúteo','2–3','1×'],['Gemelos','3','1×'],['Aductores','2','1×'],['Abductores','2','1×']]
+    ['Deltoide posterior','6','2×'],['Bíceps','6','2×'],['Tríceps','6','2×'],['Cuádriceps','9','1×'],
+    ['Isquios','3','1×'],['Glúteo','2–3','1×'],['Gemelos','3','1×'],['Aductores','2','1×'],['Abductores','2','1×']]
     .map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('');
   const n=Object.keys(S.hist).length;
 
@@ -832,8 +832,8 @@ function renderNotes(){
 
     '<h2>Piernas A y B</h2>'+
     '<p>Piernas tiene dos rutinas y eliges cuál toca con el selector <b>Día A / Día B</b>. La app recuerda la última que elegiste. Lo natural es alternarlas semana a semana.</p>'+
-    '<p><b>A:</b> Seated Hamstring Curl en pirámide, Hack Squat 6×10-12, Bulgarian Split Squat lenta y Leg Extension con post-fallo. <b>B:</b> Lying Leg Curl en pirámide, Leg Press 6×10-12, Reverse Dumbbell Lunge y Leg Extension en dos rangos. En largo se suman Calf Raise, Hip Adduction y Hip Abduction.</p>'+
-    '<p>En los ejercicios en <b>pirámide</b> subes el peso cada serie y bajas las repeticiones. La casilla de reps de cada serie te muestra su rango, y el ejercicio te pide subir de peso cuando llegas al <b>tope del rango en todas las series</b>. En corto, Piernas hace solo los 4 ejercicios principales de la rutina con todas sus series. En largo se suman gemelos, aductores y abductores.</p>'+
+    '<p><b>A:</b> Seated Hamstring Curl en pirámide, Hack Squat 3×10-12, Bulgarian Split Squat lenta y Leg Extension con post-fallo. <b>B:</b> Lying Leg Curl en pirámide, Leg Press 3×10-12, Reverse Dumbbell Lunge y Leg Extension en dos rangos. En largo se suman Calf Raise, Hip Adduction y Hip Abduction.</p>'+
+    '<p>En los ejercicios en <b>pirámide</b> subes el peso cada serie y bajas las repeticiones. La casilla de reps de cada serie te muestra su rango, y el ejercicio te pide subir de peso cuando llegas al <b>tope del rango en todas las series</b>. En corto, Piernas hace solo los 4 ejercicios principales, y el compuesto (Hack Squat o Leg Press) sube a 4 series para compensar los ejercicios que salen. En largo se suman gemelos, aductores y abductores.</p>'+
 
     '<h2>Híbrido y normal</h2>'+
     '<p>En <b>híbrido</b>, el bíceps va el martes con Push y el tríceps el miércoles con Pull. Así cada brazo entra fresco, sin arrastrar la fatiga de los press ni de los remos.</p>'+
